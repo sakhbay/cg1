@@ -57,9 +57,10 @@ function setupGeometry()
   	material = new THREE.MeshNormalMaterial();
   	var childGeometry= new THREE.BoxGeometry(0.1, 0.1, 0.1);
 
-    childPivot = new THREE.Object3D();
+
+  	childPivot = new THREE.Object3D();
   	var childMesh = new THREE.Mesh(childGeometry,material);
-  	childPivot.add(childMesh)
+  	childPivot.add(childMesh);
     childPivot.add(new THREE.AxisHelper(1));
   	childPivot.position.set(0.5,0,0);
 

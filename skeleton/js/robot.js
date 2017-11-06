@@ -19,74 +19,107 @@ Robot.prototype.buildRobot = function () {
 
     // Make a torso
     var torsoGeometry = new THREE.BoxGeometry(2, 3, 1);
-    var torso = new Node(buildMesh(torsoGeometry), "torso_node");
+    var torsoPivot = new THREE.Object3D();
+    var torso = new Node(buildPivot(torsoPivot,
+        new THREE.Mesh(torsoGeometry, defaultMaterial)), "torso_node");
 
     // Make a head and push it to it's parent(torso)
-    var headGeometry = new THREE.DodecahedronGeometry(1, 0)
-    var head = new Node(buildMesh(headGeometry), "head_node");
-    setMeshPosition(head, 0, 2.1, 0);
+    var headGeometry = new THREE.DodecahedronGeometry(1, 0);
+    var headPivot = new THREE.Object3D();
+    var head = new Node(buildPivot(headPivot,
+        new THREE.Mesh(headGeometry, defaultMaterial)), "head_node");
+    setPivotPosition(head, 0, 2.1, 0);
     head.setParent(torso);
 
     // Make upper arms and push them to their parent(torso)
-    var upperArmGeometry = new THREE.BoxGeometry(.5, 1.5, 0.5)
-    var leftUpperArm = new Node(buildMesh(upperArmGeometry), "left_upper_arm");
-    var rightUpperArm = new Node(buildMesh(upperArmGeometry), "right_upper_arm");
+    var upperArmGeometry = new THREE.BoxGeometry(.5, 1.4, 0.5);
+    var leftUpperArmPivot = new THREE.Object3D();
+    var rightUpperArmPivot = new THREE.Object3D();
+    var leftUpperArm = new Node(buildPivot(leftUpperArmPivot,
+        new THREE.Mesh(upperArmGeometry, defaultMaterial)), "left_upper_arm");
+    var rightUpperArm = new Node(buildPivot(rightUpperArmPivot,
+        new THREE.Mesh(upperArmGeometry, defaultMaterial)), "right_upper_arm");
     leftUpperArm.setParent(torso);
     rightUpperArm.setParent(torso);
-    setMeshPosition(rightUpperArm, 1.3, .7, 0);
-    setMeshPosition(leftUpperArm, -1.3, .7, 0);
+    setPivotPosition(rightUpperArm, 1.3, 1.5, 0);
+    setPivotPosition(leftUpperArm, -1.3, 1.5, 0);
+    setMeshPosition(rightUpperArm, 0, -0.75, 0);
+    setMeshPosition(leftUpperArm, 0, -0.75, 0);
+
 
     // Make lower arms and push them to their parents(upper arms)
     var lowerArmGeometry = new THREE.BoxGeometry(.5, 2, .5);
-    var leftLowerArm = new Node(buildMesh(lowerArmGeometry), "left_lower_arm");
-    var rightLowerArm = new Node(buildMesh(lowerArmGeometry), "right_lower_arm");
+    var leftLowerArmPivot = new THREE.Object3D();
+    var rightLowerArmPivot = new THREE.Object3D();
+    var leftLowerArm = new Node(buildPivot(leftLowerArmPivot,
+        new THREE.Mesh(lowerArmGeometry, defaultMaterial)), "left_lower_arm");
+    var rightLowerArm = new Node(buildPivot(rightLowerArmPivot,
+        new THREE.Mesh(lowerArmGeometry, defaultMaterial)), "right_lower_arm");
     leftLowerArm.setParent(leftUpperArm);
     rightLowerArm.setParent(rightUpperArm);
-    setMeshPosition(leftLowerArm, -1.3, -1.1, 0);
-    setMeshPosition(rightLowerArm, 1.3, -1.1, 0);
+    setPivotPosition(leftLowerArm, -1.3, 0, 0);
+    setPivotPosition(rightLowerArm, 1.3, 0, 0);
+    setMeshPosition(leftLowerArm, 0, -1, 0);
+    setMeshPosition(rightLowerArm, 0, -1, 0);
 
     // Make hands and push them to their parents(lower arms)
     var handGeometry = new THREE.SphereGeometry(.35);
-    var leftHand = new Node(buildMesh(handGeometry), "left_hand");
-    var rightHand = new Node(buildMesh(handGeometry), "right_hand");
+    var leftHandPivot = new THREE.Object3D();
+    var rightHandPivot = new THREE.Object3D()
+    var leftHand = new Node(buildPivot(leftHandPivot,
+        new THREE.Mesh(handGeometry, defaultMaterial)), "left_hand");
+    var rightHand = new Node(buildPivot(rightHandPivot,
+        new THREE.Mesh(handGeometry, defaultMaterial)), "right_hand");
     leftHand.setParent(leftLowerArm);
     rightHand.setParent(rightLowerArm);
-    setMeshPosition(leftHand, -1.3, -2.45, 0);
-    setMeshPosition(rightHand, 1.3, -2.45, 0);
+    setPivotPosition(leftHand, -1.3, -2.3, 0);
+    setPivotPosition(rightHand, 1.3, -2.3, 0);
 
     // Make legs and push them to their parent(torso)
     var legGeometry = new THREE.BoxGeometry(.8, 3.5, 1);
-    var leftLeg = new Node(buildMesh(legGeometry), "left_leg");
-    var rightLeg = new Node(buildMesh(legGeometry), "right_leg");
+    var leftLegPivot = new THREE.Object3D();
+    var rightLegPivot = new THREE.Object3D();
+    var leftLeg = new Node(buildPivot(leftLegPivot,
+        new THREE.Mesh(legGeometry, defaultMaterial)), "left_leg");
+    var rightLeg = new Node(buildPivot(rightLegPivot,
+        new THREE.Mesh(legGeometry, defaultMaterial)), "right_leg");
     leftLeg.setParent(torso);
     rightLeg.setParent(torso);
-    setMeshPosition(leftLeg, -.5, -3.3, 0);
-    setMeshPosition(rightLeg, .5, -3.3, 0);
+    setPivotPosition(leftLeg, -.5, -1.55, 0);
+    setPivotPosition(rightLeg, .5, -1.55, 0);
+    setMeshPosition(leftLeg, 0, -1.75, 0);
+    setMeshPosition(rightLeg, 0, -1.75, 0);
 
     // Make feet and push them to their parents(leg)
     var footGeometry = new THREE.BoxGeometry(.8, .4, 1.8);
-    var leftFoot = new Node(buildMesh(footGeometry), "left_foot");
-    var rightFoot = new Node(buildMesh(footGeometry), "right_foot");
+    var leftFootPivot = new THREE.Object3D();
+    var rightFootPivot = new THREE.Object3D();
+    var leftFoot = new Node(buildPivot(leftFootPivot,
+        new THREE.Mesh(footGeometry, defaultMaterial)), "left_foot");
+    var rightFoot = new Node(buildPivot(rightFootPivot,
+        new THREE.Mesh(footGeometry, defaultMaterial)), "right_foot");
     leftFoot.setParent(leftLeg);
     rightFoot.setParent(rightLeg);
-    setMeshPosition(leftFoot, -.5, -5.2, .37);
-    setMeshPosition(rightFoot, .5, -5.2, .37);
+    setPivotPosition(leftFoot, -.5, -5.2, 0);
+    setPivotPosition(rightFoot, .5, -5.2, 0);
+    setMeshPosition(leftFoot, 0, 0, .4);
+    setMeshPosition(rightFoot, 0, 0, .4);
 
     this.robotTree = new RobotTree(torso);
 
     // add the Meshes to scene
-    this.root.add(torso.mesh);
-    this.root.add(head.mesh);
-    this.root.add(rightUpperArm.mesh);
-    this.root.add(leftUpperArm.mesh);
-    this.root.add(leftLowerArm.mesh);
-    this.root.add(rightLowerArm.mesh);
-    this.root.add(leftHand.mesh);
-    this.root.add(rightHand.mesh);
-    this.root.add(leftLeg.mesh);
-    this.root.add(rightLeg.mesh);
-    this.root.add(leftFoot.mesh);
-    this.root.add(rightFoot.mesh);
+    this.root.add(torso.pivot);
+    this.root.add(head.pivot);
+    this.root.add(rightUpperArm.pivot);
+    this.root.add(leftUpperArm.pivot);
+    this.root.add(leftLowerArm.pivot);
+    this.root.add(rightLowerArm.pivot);
+    this.root.add(leftHand.pivot);
+    this.root.add(rightHand.pivot);
+    this.root.add(leftLeg.pivot);
+    this.root.add(rightLeg.pivot);
+    this.root.add(leftFoot.pivot);
+    this.root.add(rightFoot.pivot);
 
 
     return this.root
@@ -101,30 +134,30 @@ Robot.prototype.selectChild = function (forward) {
         if (currentNode == undefined || currentNode == null) {
             currentNode = this.robotTree._root;
             console.log("selected child: " + currentNode.id);
-            currentNode.mesh.material = selectedMaterial;
-        } else if (currentNode.children.length == 0) {
+            currentNode.pivot.children[0].material = selectedMaterial;
+        } else if (!currentNode.hasChildren()) {
             console.log(currentNode.id + " does not have a child")
         } else {
             currentNode = currentNode.children[0];
             console.log("selected child: " + currentNode.id);
             if (currentNode.parent != null) {
-                currentNode.parent.mesh.material = defaultMaterial;
+                currentNode.parent.pivot.children[0].material = defaultMaterial;
             }
-            currentNode.mesh.material = selectedMaterial;
+            currentNode.pivot.children[0].material = selectedMaterial;
         }
     } else {
         var childNode = currentNode;
         if (currentNode == undefined || currentNode == null) {
             currentNode = this.robotTree._root;
             console.log("selected Parent: " + currentNode.id);
-            currentNode.mesh.material = selectedMaterial;
+            currentNode.pivot.children[0].material = selectedMaterial;
         } else if (currentNode.parent == null) {
             console.log(currentNode.id + " is an orphan");
         } else {
             currentNode = currentNode.parent;
             console.log("selected Parent: " + currentNode.id);
-            childNode.mesh.material = defaultMaterial;
-            currentNode.mesh.material = selectedMaterial
+            childNode.pivot.children[0].material = defaultMaterial;
+            currentNode.pivot.children[0].material = selectedMaterial
         }
     }
 }
@@ -139,20 +172,20 @@ Robot.prototype.selectSibling = function (forward) {
     }
 
     if (forward) {
-        if (currentNode.parent == undefined || currentNode.parent.children[currentNodeIndex + 1] == undefined){
+        if (currentNode.parent == undefined || currentNode.parent.children[currentNodeIndex + 1] == undefined) {
             console.log(currentNode.id + " doesn't have next sibling");
         } else {
-            prevNode.mesh.material = defaultMaterial;
+            prevNode.pivot.children[0].material = defaultMaterial;
             currentNode = currentNode.parent.children[currentNodeIndex + 1];
-            currentNode.mesh.material = selectedMaterial;
+            currentNode.pivot.children[0].material = selectedMaterial;
         }
     } else {
-        if (currentNode.parent == undefined || currentNode.parent.children[currentNodeIndex - 1] == undefined){
+        if (currentNode.parent == undefined || currentNode.parent.children[currentNodeIndex - 1] == undefined) {
             console.log(currentNode.id + " doesn't have previous sibling")
         } else {
-            prevNode.mesh.material = defaultMaterial;
+            prevNode.pivot.children[0].material = defaultMaterial;
             currentNode = currentNode.parent.children[currentNodeIndex - 1];
-            currentNode.mesh.material = selectedMaterial;
+            currentNode.pivot.children[0].material = selectedMaterial;
         }
     }
 };
@@ -161,13 +194,31 @@ Robot.prototype.toggleSelection = function () {
 };
 
 Robot.prototype.rotateOnAxis = function (axis, degree) {
+    rotateTree(currentNode, axis, degree);
 };
 
-function findIndex(node){
+function rotateTree(node, axis, degree) {
+    if (!node.hasChildren()) {
+        rotateObject(node, axis, degree);
+    } else {
+        rotateObject(node, axis, degree);
+        rotateTree(node.children[0], axis, degree);
+    }
+}
+
+function rotateObject(node, axis, degree) {
+    var object = node.pivot;
+    var rotationMatrix = new THREE.Matrix4();
+    rotationMatrix.makeRotationAxis(axis.normalize(), degToRad(degree));
+    object.matrix.multiply(rotationMatrix);
+    object.rotation.setFromRotationMatrix(object.matrix);
+}
+
+function findIndex(node) {
     var siblings = node.parent.children;
     var index;
-    for (var i = 0; i < siblings.length; i++){
-        if (node.id == siblings[i].id){
+    for (var i = 0; i < siblings.length; i++) {
+        if (node.id == siblings[i].id) {
             index = i;
             return index;
         }
@@ -175,19 +226,29 @@ function findIndex(node){
     return null;
 }
 
+function setPivotPosition(node, x, y, z) {
+    node.pivot.position.set(x, y, z)
+}
+
 function setMeshPosition(node, x, y, z) {
-    node.mesh.position.set(x, y, z)
+    node.pivot.children[0].position.set(x, y, z);
 }
 
-function buildMesh(geometry) {
-    return new THREE.Mesh(geometry, defaultMaterial);
+function buildPivot(pivot, mesh) {
+    pivot.add(mesh);
+    pivot.add(new THREE.AxisHelper(1));
+    return pivot;
 }
 
-function Node(mesh, id) {
-    this.mesh = mesh;
+function Node(pivot, id) {
+    this.pivot = pivot;
     this.id = id;
     this.parent = null;
     this.children = [];
+
+    this.hasChildren = function () {
+        return (this.children.length == 0) ? false : true;
+    }
 
     this.setParent = function (parent) {
         if (this.parent == null) {
