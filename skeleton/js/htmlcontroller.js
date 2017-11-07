@@ -51,10 +51,16 @@ HtmlController.prototype.onDocumentKeyDown = function (event) {
             this.sceneController.reset();
             break;
         case "ArrowUp":
-            this.sceneController.rotateNode(THREE.Vector3.XAxis, 3);
+            this.sceneController.rotateNode(THREE.Vector3.XAxis, -3);
             break;
         case "ArrowDown":
-            this.sceneController.rotateNode(THREE.Vector3.XAxis, -3);
+            this.sceneController.rotateNode(THREE.Vector3.XAxis, 3);
+            break;
+        case "ArrowLeft":
+            this.sceneController.rotateNode(THREE.Vector3.ZAxis, -3);
+            break;
+        case "ArrowRight":
+            this.sceneController.rotateNode(THREE.Vector3.ZAxis, 3);
             break;
         case "w":
             this.sceneController.robot.selectChild(false);
@@ -68,6 +74,8 @@ HtmlController.prototype.onDocumentKeyDown = function (event) {
         case "d":
             this.sceneController.robot.selectSibling(true);
             break;
+        case "c":
+            this.sceneController.robot.toggleSelection();
     }
     this.sceneController.render();
 };
