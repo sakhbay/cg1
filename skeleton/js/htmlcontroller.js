@@ -1,5 +1,3 @@
-var mouse = {x: 0, y: 0}
-
 var HtmlController = function (sceneController) {
     this.sceneController = sceneController;
     this.mouseStart = new THREE.Vector2();
@@ -27,7 +25,8 @@ HtmlController.prototype.onWindowResize = function () {
 HtmlController.prototype.onDocumentMouseDown = function (event) {
     //event.button 0 - 4 gives right, middle, left, side button
     // window.console.log("mouse down at " + event.x + " / " + event.y + " with button " + event.button);
-    this.sceneController.handleMouseClick(mouse);
+    this.sceneController.handleMouseClick(event);
+    this.sceneController.render();
 };
 
 HtmlController.prototype.onDocumentMouseMove = function (event) {
@@ -76,6 +75,9 @@ HtmlController.prototype.onDocumentKeyDown = function (event) {
             break;
         case "c":
             this.sceneController.robot.toggleSelection();
+            break;
+        case "k":
+            this.sceneController.animate();
     }
     this.sceneController.render();
 };

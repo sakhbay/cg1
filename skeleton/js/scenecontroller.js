@@ -1,3 +1,6 @@
+var mouse = new THREE.Vector2();
+var targetList = [];
+
 var SceneController = function (document) {
     this.scene = new THREE.Scene();
     this.renderer = new THREE.WebGLRenderer({
@@ -21,7 +24,6 @@ SceneController.prototype.setup = function () {
     this.setupControls();
     this.setupLight();
     this.setupGeometry();
-    this.setupTreeController();
 
     this.render();
     this.animate();
@@ -51,6 +53,19 @@ SceneController.prototype.setupControls = function () {
 SceneController.prototype.setupGeometry = function () {
     this.robot = new Robot();
     this.scene.add(this.robot.buildRobot());
+    var robot = this.robot;
+    targetList.push(robot.root.children[0].children[1]);
+    targetList.push(robot.root.children[0].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[3].children[1]);
+    targetList.push(robot.root.children[0].children[3].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[3].children[2].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[4].children[1]);
+    targetList.push(robot.root.children[0].children[4].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[4].children[2].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[5].children[1]);
+    targetList.push(robot.root.children[0].children[5].children[2].children[1]);
+    targetList.push(robot.root.children[0].children[6].children[1]);
+    targetList.push(robot.root.children[0].children[5].children[2].children[1]);
 };
 
 SceneController.prototype.setupLight = function () {
@@ -79,16 +94,12 @@ SceneController.prototype.animate = function () {
     this.controls.update();
 };
 
-SceneController.prototype.setupTreeController = function () {
-    this.treeController = new TreeController(this.robot.robotTree);
-};
-
 SceneController.prototype.reset = function () {
     this.robot.reset();
 };
 
 SceneController.prototype.toggleSelection = function () {
-    this.robot.toggleSelection();
+    //this.robot.toggleSelection();
 };
 
 SceneController.prototype.selectSibling = function (forward) {
@@ -101,22 +112,31 @@ SceneController.prototype.selectChild = function () {
 
 SceneController.prototype.toggleAxisVisibility = function () {
     // utils provides two helper functions which could be used
+    this.root.toggleAxisVisibility();
 };
 
 SceneController.prototype.rotateNode = function (axis, degree) {
     this.robot.rotateOnAxis(axis, degree);
 };
 
-SceneController.prototype.handleMouseClick = function (mouse) {
+SceneController.prototype.handleMouseClick = function (event) {
     // Reference http://stemkoski.github.io/Three.js/Mouse-Click.html
-    console.log("click");
+    var rayCaster = new THREE.Raycaster();
+    var renderer = this.renderer;
+    var camera = this.camera;
+
+    mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+    mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+    rayCaster.setFromCamera(mouse, camera);
+
+    var intersects = rayCaster.intersectObjects(targetList);
+    if ( intersects.length > 0 )
+    {;
+        this.robot.toggleSelection(intersects[0].object.parent);
+        intersects[ 0 ].object.geometry.colorsNeedUpdate = true;
+    }
 };
 
 SceneController.prototype.handleMouseMove = function (offsetX, offsetY) {
 };
 
-function TreeController(tree) {
-    this.currentNode = null;
-    this.tree = tree;
-
-}

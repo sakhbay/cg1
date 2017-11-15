@@ -12,6 +12,7 @@ var selectedMaterial = new THREE.MeshLambertMaterial({
 var Robot = function () {
 
     this.root = new THREE.Object3D;
+    isRotating = false;
 };
 
 
@@ -22,7 +23,7 @@ Robot.prototype.buildRobot = function () {
     var torsoMesh = new THREE.Mesh(torsoGeometry, defaultMaterial);
     var torso = new THREE.Object3D();
     torso.name = "torso_node";
-    torso.add(buildAxes(1),torsoMesh);
+    torso.add(buildAxes(2),torsoMesh);
     torso.children[0].visible = false;
 
     // Make a head and push it to it's parent(torso)
@@ -43,8 +44,8 @@ Robot.prototype.buildRobot = function () {
     rightUpperArm.name = "right_upper_arm_node";
     var leftUpperArmMesh = new THREE.Mesh(upperArmGeometry, defaultMaterial);
     var rightUpperArmMesh = new THREE.Mesh(upperArmGeometry, defaultMaterial);
-    leftUpperArm.add(buildAxes(1), leftUpperArmMesh);
-    rightUpperArm.add(buildAxes(1), rightUpperArmMesh);
+    leftUpperArm.add(buildAxes(2), leftUpperArmMesh);
+    rightUpperArm.add(buildAxes(2), rightUpperArmMesh);
     leftUpperArm.children[0].visible = false;
     rightUpperArm.children[0].visible = false;
     torso.add(leftUpperArm, rightUpperArm);
@@ -62,8 +63,8 @@ Robot.prototype.buildRobot = function () {
     var rightLowerArmMesh = new THREE.Mesh(lowerArmGeometry, defaultMaterial);
     leftLowerArm.name = "left_lower_arm_node";
     rightLowerArm.name = "right_lower_arm_node";
-    leftLowerArm.add(buildAxes(1), leftLowerArmMesh);
-    rightLowerArm.add(buildAxes(1), rightLowerArmMesh);
+    leftLowerArm.add(buildAxes(2), leftLowerArmMesh);
+    rightLowerArm.add(buildAxes(2), rightLowerArmMesh);
     leftLowerArm.children[0].visible = false;
     rightLowerArm.children[0].visible = false;
     leftUpperArm.add(leftLowerArm);
@@ -81,8 +82,8 @@ Robot.prototype.buildRobot = function () {
     rightHand.name = "right_hand_node";
     var leftHandMesh = new THREE.Mesh(handGeometry, defaultMaterial);
     var rightHandMesh = new THREE.Mesh(handGeometry, defaultMaterial);
-    leftHand.add(buildAxes(1), leftHandMesh);
-    rightHand.add(buildAxes(1), rightHandMesh);
+    leftHand.add(buildAxes(2), leftHandMesh);
+    rightHand.add(buildAxes(2), rightHandMesh);
     leftHand.children[0].visible = false;
     rightHand.children[0].visible = false;
     leftLowerArm.add(leftHand);
@@ -98,8 +99,8 @@ Robot.prototype.buildRobot = function () {
     rightLeg.name = "right_leg_node";
     var leftLegMesh = new THREE.Mesh(legGeometry, defaultMaterial);
     var rightLegMesh = new THREE.Mesh(legGeometry, defaultMaterial);
-    leftLeg.add(buildAxes(1), leftLegMesh);
-    rightLeg.add(buildAxes(1), rightLegMesh);
+    leftLeg.add(buildAxes(2), leftLegMesh);
+    rightLeg.add(buildAxes(2), rightLegMesh);
     leftLeg.children[0].visible = false;
     rightLeg.children[0].visible = false;
     torso.add(leftLeg, rightLeg);
@@ -116,8 +117,8 @@ Robot.prototype.buildRobot = function () {
     rightFoot.name = "right_foot_node";
     var leftFootMesh = new THREE.Mesh(footGeometry, defaultMaterial);
     var rightFootMesh = new THREE.Mesh(footGeometry, defaultMaterial);
-    leftFoot.add(buildAxes(1), leftFootMesh);
-    rightFoot.add(buildAxes(1), rightFootMesh);
+    leftFoot.add(buildAxes(2), leftFootMesh);
+    rightFoot.add(buildAxes(2), rightFootMesh);
     leftFoot.children[0].visible = false;
     rightFoot.children[0].visible = false;
     leftLeg.add(leftFoot);
@@ -215,8 +216,15 @@ Robot.prototype.selectSibling = function (forward) {
     }
 };
 
-Robot.prototype.toggleSelection = function () {
-    currentObject.children[0].visible = !currentObject.children[0].visible;
+Robot.prototype.toggleSelection = function (object) {
+    if (currentObject != undefined) {
+        currentObject.children[1].material = defaultMaterial;
+        currentObject.children[1].geometry.colorsNeedUpdate = true;
+    }
+    currentObject = object;
+    console.log("selected object: " + currentObject.name);
+    currentObject.children[1].material = selectedMaterial;
+    currentObject.children[1].geometry.colorsNeedUpdate = true;
 };
 
 Robot.prototype.rotateOnAxis = function (axis, degree) {
@@ -226,6 +234,10 @@ Robot.prototype.rotateOnAxis = function (axis, degree) {
     object.matrix.multiply(rotationMatrix);
     object.rotation.setFromRotationMatrix(object.matrix);
 };
+
+Robot.prototype.toggleAxisVisibility = function (){
+    currentObject.children[0].visible = !currentObject.children[0].visible;
+}
 
 function findIndex(object) {
     var siblings = object.parent.children;
